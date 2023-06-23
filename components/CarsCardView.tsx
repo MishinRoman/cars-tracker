@@ -1,6 +1,10 @@
-// @flow
+
 import * as React from "react";
 import { View, Text } from "react-native";
+
+interface Props{
+  carItem:Car;
+}
 
 enum TypesCar {
   "Грузовой",
@@ -13,17 +17,20 @@ type Driver = {
   WhatsApp: string;
   Location: string;
 };
-interface Props{
+interface Car{
   id: number;
   carName: string;
-  typeCar: TypesCar | any;
-  Driver: Driver| any;
+  typeCar?: TypesCar|string;
+  Driver?: Driver;
 };
 
-const CarsCardView = (props:Props) => {
+const CarsCardView:React.FC<Props> = ({carItem}) => {
   return (
     <View>
-      <Text>{props.id}</Text>
+      <Text>{carItem.carName}</Text>
+      <Text>{carItem.typeCar}</Text>
+      <Text>{carItem.Driver?.Name}</Text>
+      <Text>{carItem.Driver?.PhoneNumber}</Text>
     </View>
   );
 };

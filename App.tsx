@@ -5,8 +5,8 @@ import  CarsListView  from './components/CarsListView';
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <CarsListView />
+      <CarsListView/>
+      
       <StatusBar style="auto" />
     </View>
   );
@@ -14,9 +14,10 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+   flex: 1,
+   //flexWrap:"wrap",
+   backgroundColor: '#0000',
+   alignItems: 'center',
+   justifyContent:"center"
   },
 });
