@@ -1,23 +1,32 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import  CarsListView  from './components/CarsListView';
+import { Stack, useRouter } from 'expo-router';
+
+
+
 
 export default function App() {
+ 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <StatusBar style="light" />
       <CarsListView/>
-      
-      <StatusBar style="auto" />
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-   flex: 1,
-   //flexWrap:"wrap",
-   backgroundColor: '#0000',
+   flex: 2,   
+   backgroundColor: '#1e201e',
    alignItems: 'center',
-   justifyContent:"center"
+   justifyContent:"center",
+   paddingVertical:50,
+   margin:0,
+    
+   
   },
+  
+
 });
