@@ -8,34 +8,20 @@ import {
 import { useState } from "react";
 import CarsCardView from "./CarsCardView";
 import axios from "axios";
+import Car from "../models/Car";
+import { SelectedActions } from "./SelectedActions";
+import styles from "./styles/StylesComponent";
 
-enum TypesCar {
-  "Грузовой",
-  "Пассажирский",
-  "Спецтранспорт",
-}
 
-type Driver = {
-  Name: string;
-  PhoneNumber: string;
-  WhatsApp: string;
-  Location: string;
-};
-type Car = {
-  id: number;
-  carName: string;
-  typeCar?: TypesCar ;
-  Driver?: Driver;
-};
 
-const CarsListView = () => {
+const CarsListView:React.FC = () => {
   const customData = require("../dataDB.json") as Car[];
-  const [cars, setCars] = useState<Car[]>(customData);
+  const [cars, setCars] = useState<Car[]>();
 
   //if you want get data from webstore change this url example mokapi
   const mockapiUrl = "https://6491e4a82f2c7ee6c2c91cc7.mockapi.io/cars";
 
-  const data = async () =>
+  const data = async ()  =>
     await axios({
       url: mockapiUrl,
       responseType: "json",
@@ -48,26 +34,47 @@ const CarsListView = () => {
       })
       .catch((err) => console.log(err));
 
+
+      const [selectedItems, setSelectedItems]=useState<Car[]>([]);
+
+      const addSelectedItems = (selectedItem:Car, selected:boolean)=>{
+        if(selectedItems.length>0&&selectedItems.some(i=>i.id===selectedItem.id)){
+          const deleted = selectedItems.filter(i=>i.id!=selectedItem.id)
+          setSelectedItems(deleted)
+        }
+        else{
+          setSelectedItems([...selectedItems,selectedItem])
+        }
+      }
+      const onDelete =()=>{
+        //setCars()
+      }
+
   return (
     <View>
       <SafeAreaView>
+        <SelectedActions selectedItems={selectedItems} />
         <FlatList
         scrollEnabled={true}
           scrollIndicatorInsets={{ top: 10, bottom: 10, left: 10, right: 10 }}
           indicatorStyle="white"
           data={cars ?? customData}
-          renderItem={({ item }) => <CarsCardView carItem={item} />}
+          renderItem={({ item }) => <CarsCardView onSelectItem={addSelectedItems}  carItem={item} />}
           keyExtractor={(item) => `basicListEntry-${item.id}`}
+          onScrollEndDrag={data}
+          onScrollBeginDrag={data}
+         
         />
-        <TouchableOpacity
-          style={{ backgroundColor: "#39b385", borderRadius: 8, padding: 4 }}
+      </SafeAreaView>
+
+      {/* <TouchableOpacity
+          style={styles.button}
           onPress={data}
         >
-          <Text style={{ textAlign: "center", fontSize: 22, margin: 6 }}>
+          <Text style={styles.buttonText}>
             {"Загрузить данные"}
           </Text>
-        </TouchableOpacity>
-      </SafeAreaView>
+        </TouchableOpacity> */}
     </View>
   );
 };
