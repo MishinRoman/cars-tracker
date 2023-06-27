@@ -16,7 +16,7 @@ import styles from "./styles/StylesComponent";
 
 const CarsListView:React.FC = () => {
   const customData = require("../dataDB.json") as Car[];
-  const [cars, setCars] = useState<Car[]>();
+  const [cars, setCars] = useState<Car[]>([]);
 
   //if you want get data from webstore change this url example mokapi
   const mockapiUrl = "https://6491e4a82f2c7ee6c2c91cc7.mockapi.io/cars";
@@ -37,23 +37,35 @@ const CarsListView:React.FC = () => {
 
       const [selectedItems, setSelectedItems]=useState<Car[]>([]);
 
-      const addSelectedItems = (selectedItem:Car, selected:boolean)=>{
-        if(selectedItems.length>0&&selectedItems.some(i=>i.id===selectedItem.id)){
-          const deleted = selectedItems.filter(i=>i.id!=selectedItem.id)
+      const addSelectedItems = (selectedItem:Car|null, selected:boolean)=>{
+        if(selectedItems.length>0&&selectedItems.some(i=>i.id===selectedItem?.id)){
+          const deleted = selectedItems.filter(i=>i.id!=selectedItem?.id)
           setSelectedItems(deleted)
         }
         else{
-          setSelectedItems([...selectedItems,selectedItem])
+          setSelectedItems(selectedItem!=null?[...selectedItems,selectedItem]:[...selectedItems])
         }
       }
-      const onDelete =()=>{
-        //setCars()
+      
+      const onDelete = async ()=>{
+      
+        for (let indexCar = 0; indexCar < selectedItems.length; indexCar++) {
+          const delUrl:string = mockapiUrl+"/"+selectedItems[indexCar].id
+
+          console.log(delUrl);
+         await axios.delete(delUrl).catch(err=>console.log(err)).finally(data)
+          
+          
+        }
+        setSelectedItems([])
+      
+      
       }
 
   return (
     <View>
       <SafeAreaView>
-        <SelectedActions selectedItems={selectedItems} />
+        <SelectedActions deleteSelectedCar={onDelete} selectedItems={selectedItems} />
         <FlatList
         scrollEnabled={true}
           scrollIndicatorInsets={{ top: 10, bottom: 10, left: 10, right: 10 }}
@@ -61,20 +73,21 @@ const CarsListView:React.FC = () => {
           data={cars ?? customData}
           renderItem={({ item }) => <CarsCardView onSelectItem={addSelectedItems}  carItem={item} />}
           keyExtractor={(item) => `basicListEntry-${item.id}`}
-          onScrollEndDrag={data}
-          onScrollBeginDrag={data}
+          // onScrollEndDrag={data}
+          // onScrollBeginDrag={data}
          
         />
-      </SafeAreaView>
-
-      {/* <TouchableOpacity
+      <TouchableOpacity
           style={styles.button}
           onPress={data}
         >
           <Text style={styles.buttonText}>
             {"Загрузить данные"}
           </Text>
-        </TouchableOpacity> */}
+        </TouchableOpacity>
+      </SafeAreaView>
+
+     
     </View>
   );
 };

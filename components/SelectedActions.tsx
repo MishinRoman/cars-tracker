@@ -3,7 +3,9 @@ import * as React from 'react';
 import Car from '../models/Car'
 import styles from './styles/StylesComponent';
 type Props = {
-  selectedItems:Car[]
+  selectedItems:Car[];
+  deleteSelectedCar:VoidFunction;
+
 };
 export function SelectedActions(props: Props) {
   return (
@@ -14,6 +16,7 @@ export function SelectedActions(props: Props) {
                 <Text style={styles.textSelectedCount}>{"Выибрано: "+props.selectedItems.length}</Text>
                 <TouchableOpacity
                 style={styles.deleteBtn}
+                onPress={props.deleteSelectedCar}
                 >
                 <Text style={styles.buttonText}>{"Удалить"}</Text>
                 </TouchableOpacity>
