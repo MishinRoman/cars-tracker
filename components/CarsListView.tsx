@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from "react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CarsCardView from "./CarsCardView";
 import axios from "axios";
 import Car from "../models/Car";
@@ -20,7 +20,7 @@ const CarsListView:React.FC = () => {
 
   //if you want get data from webstore change this url example mokapi
   const mockapiUrl = "https://6491e4a82f2c7ee6c2c91cc7.mockapi.io/cars";
-
+  
   const data = async ()  =>
     await axios({
       url: mockapiUrl,
@@ -29,17 +29,18 @@ const CarsListView:React.FC = () => {
         Accept: "application/json; odata=verbose",
       },
     })
-      .then((res) => {
-        setCars(res.data);
-      })
-      .catch((err) => console.log(err));
-
-
-      const [selectedItems, setSelectedItems]=useState<Car[]>([]);
-
-      const addSelectedItems = (selectedItem:Car|null, selected:boolean)=>{
-        if(selectedItems.length>0&&selectedItems.some(i=>i.id===selectedItem?.id)){
-          const deleted = selectedItems.filter(i=>i.id!=selectedItem?.id)
+    .then((res) => {
+      setCars(res.data);
+    })
+    .catch((err) => console.log(err));
+    
+    
+    
+    const [selectedItems, setSelectedItems]=useState<Car[]>([]);
+    
+    const addSelectedItems = (selectedItem:Car|null, selected:boolean)=>{
+      if(selectedItems.length>0&&selectedItems.some(i=>i.id===selectedItem?.id)){
+        const deleted = selectedItems.filter(i=>i.id!=selectedItem?.id)
           setSelectedItems(deleted)
         }
         else{
@@ -57,10 +58,15 @@ const CarsListView:React.FC = () => {
           
           
         }
-        setSelectedItems([])
+         setSelectedItems([])
       
       
       }
+      useEffect(()=>{
+        data()
+      },customData
+       )
+    
 
   return (
     <View>
@@ -73,18 +79,18 @@ const CarsListView:React.FC = () => {
           data={cars ?? customData}
           renderItem={({ item }) => <CarsCardView onSelectItem={addSelectedItems}  carItem={item} />}
           keyExtractor={(item) => `basicListEntry-${item.id}`}
-          // onScrollEndDrag={data}
-          // onScrollBeginDrag={data}
+          onScrollEndDrag={data}
+          onScrollBeginDrag={data}
          
         />
-      <TouchableOpacity
+      {/* <TouchableOpacity
           style={styles.button}
           onPress={data}
         >
           <Text style={styles.buttonText}>
             {"Загрузить данные"}
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </SafeAreaView>
 
      
